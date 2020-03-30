@@ -8,5 +8,5 @@ obj-$(CONFIG_MACH_LOONGSON64) += cop2-ex.o platform.o dma.o \
 obj-$(CONFIG_SMP)	+= smp.o
 obj-$(CONFIG_NUMA)	+= numa.o
 obj-$(CONFIG_RS780_HPET) += hpet.o
-obj-$(CONFIG_PCI) += pci.o
 obj-$(CONFIG_SUSPEND) += pm.o
+obj-$(CONFIG_PCI_QUIRKS) += vbios_quirk.o
