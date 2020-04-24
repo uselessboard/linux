@@ -18,6 +18,7 @@
 
 enum cpu_types {
     CPU_NONE,
+    CPU_LS2K,
     CPU_LS3_4CORES,
     CPU_LS3_8CORES,
     CPU_LS3_R4,
@@ -25,6 +26,7 @@ enum cpu_types {
 
 enum pch_types {
     PCH_NONE,
+    PCH_SOC,
     PCH_LS7A,
     PCH_RS780E,
 };
@@ -115,7 +117,10 @@ void __init *get_builtin_dtb(void)
 
     if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64G)
 			cpu = CPU_LS3_R4;
-    
+
+    if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R)
+			cpu = CPU_LS2K;
+
     if (cpu == CPU_NONE) {
         pr_err("Builtin-dtbs: Failed to determine CPU Type\n");
         return NULL;
@@ -127,14 +132,20 @@ void __init *get_builtin_dtb(void)
     case CPU_LS3_R4:
         pch = get_pch_type_by_pci();
         break;
+    case CPU_LS2K:
+        pch = PCH_SOC;
+        break;
     default:
         break;
     }
 
-    if (pch == CPU_NONE) {
-        pr_err("Builtin-dtbs: Failed to determine PCH Type\n");
+    if (pch == PCH_NONE) {
+        pr_err("Builtin-dtbs: Failed to determine CPU Type\n");
         return NULL;
     }
+
+    if (cpu == CPU_LS2K && pch == PCH_SOC)
+        fdt = __dtb_loongson2k_begin;
 
     if (cpu == CPU_LS3_4CORES && pch == PCH_RS780E)
         fdt = __dtb_loongson3_4core_rs780e_begin;
