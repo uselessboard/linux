@@ -76,14 +76,14 @@
 		};
 
 		pci@1a000000 {
-			compatible = "loongson,ls7a-pci";
+			compatible = "loongson,ls2k-pci";
 			device_type = "pci";
 			#address-cells = <3>;
 			#size-cells = <2>;
 			#interrupt-cells = <2>;
 
 			reg = <0 0x1a000000 0 0x02000000>,
-				<0xefe 0x00000000 0 0x20000000>;
+				<0xfe 0x00000000 0 0x20000000>;
 
 			ranges = <0x01000000 0x0 0x00000000 0x0 0x00000000  0x0 0x00010000>,
 					<0x02000000 0x0 0x40000000 0x0 0x40000000  0x0 0x40000000>;
