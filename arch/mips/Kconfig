@@ -3151,6 +3151,9 @@ config PCI_DRIVERS_LEGACY
 	select NO_GENERIC_PCI_IOPORT_MAP
 	select PCI_DOMAINS if PCI
 
+config PCI_IO_VMMAP
+	def_bool n
+
 #
 # ISA support is now enabled via select.  Too many systems still have the one
 # or other ISA chip on the board that users don't know about so don't expect

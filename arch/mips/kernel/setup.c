@@ -73,12 +73,14 @@ static const char builtin_cmdline[] __initconst = CONFIG_CMDLINE;
 static const char builtin_cmdline[] __initconst = "";
 #endif
 
+#ifndef CONFIG_PCI_IO_VMMAP
 /*
  * mips_io_port_base is the begin of the address space to which x86 style
  * I/O ports are mapped.
  */
 unsigned long mips_io_port_base = -1;
 EXPORT_SYMBOL(mips_io_port_base);
+#endif
 
 static struct resource code_resource = { .name = "Kernel code", };
 static struct resource data_resource = { .name = "Kernel data", };

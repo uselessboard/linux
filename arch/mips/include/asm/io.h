@@ -51,17 +51,36 @@
 
 /* ioswab[bwlq], __mem_ioswab[bwlq] are defined in mangle-port.h */
 
+/*
+ * On MIPS I/O ports are memory mapped, so we access them using normal
+ * load/store instructions.
+ */
+#ifdef CONFIG_PCI_IO_VMMAP
+/*
+ * I/O port access primitives for dymatic I/O ports mapping.
+ *
+ * We'll create kmap for I/O ports in this space.
+ */
+#define arch_has_dev_port()	(1)
+#define IO_SPACE_LIMIT		(PCI_IO_SIZE - 1)
+#define PCI_IOBASE		((void __iomem *)PCI_IO_START)
+#define IOPORT_RW_BASE		PCI_IO_START
+
+#else
+
 #define IO_SPACE_LIMIT 0xffff
 
 /*
- * On MIPS I/O ports are memory mapped, so we access them using normal
- * load/store instructions. mips_io_port_base is the virtual address to
- * which all ports are being mapped.  For sake of efficiency some code
- * assumes that this is an address that can be loaded with a single lui
- * instruction, so the lower 16 bits must be zero.  Should be true on
- * on any sane architecture; generic code does not use this assumption.
+ * I/O port access primitives for fixed I/O ports mapping.
+ *
+ * mips_io_port_base is the virtual address to which all ports are
+ * being mapped.  For sake of efficiency some code assumes that this
+ * is an address that can be loaded with a single lui, instruction, so
+ * the lower 16 bits must be zero. Should be true on on any sane architecture;
+ * generic code does not use this assumption.
  */
 extern unsigned long mips_io_port_base;
+#define IOPORT_RW_BASE		mips_io_port_base
 
 static inline void set_io_port_base(unsigned long base)
 {
@@ -78,6 +97,7 @@ static inline void set_io_port_base(unsigned long base)
 #define PIO_OFFSET	mips_io_port_base
 #define PIO_MASK	IO_SPACE_LIMIT
 #define PIO_RESERVED	0x0UL
+#endif
 
 /*
  * Enforce in-order execution of data I/O.  In the MIPS architecture
@@ -308,7 +328,7 @@ static inline void pfx##out##bwlq##p(type val, unsigned long port)	\
 	else								\
 		war_io_reorder_wmb();					\
 									\
-	__addr = (void *)__swizzle_addr_##bwlq(mips_io_port_base + port); \
+	__addr = (void *)__swizzle_addr_##bwlq(IOPORT_RW_BASE + port); \
 									\
 	__val = pfx##ioswab##bwlq(__addr, val);				\
 									\
@@ -323,7 +343,7 @@ static inline type pfx##in##bwlq##p(unsigned long port)			\
 	volatile type *__addr;						\
 	type __val;							\
 									\
-	__addr = (void *)__swizzle_addr_##bwlq(mips_io_port_base + port); \
+	__addr = (void *)__swizzle_addr_##bwlq(IOPORT_RW_BASE + port); \
 									\
 	BUILD_BUG_ON(sizeof(type) > sizeof(unsigned long));		\
 									\

@@ -103,15 +103,24 @@
 #endif
 #endif
 
+#ifdef CONFIG_PCI_IO_VMMAP
+#define PCI_IO_SIZE		SZ_16M
+#else
+#define PCI_IO_SIZE		0
+#endif
+
 #ifdef CONFIG_64BIT
 /*
  * TLB refill handlers also map the vmalloc area into xuseg.  Avoid
  * the first couple of pages so NULL pointer dereferences will still
  * reliably trap.
  */
-#define VMALLOC_START		(MAP_BASE + (2 * PAGE_SIZE))
+#define PCI_IO_START		(MAP_BASE + (2 * PAGE_SIZE))
 #else
-#define VMALLOC_START	  MAP_BASE
+#define PCI_IO_START		MAP_BASE
 #endif
+
+#define PCI_IO_END		(PCI_IO_START + PCI_IO_SIZE)
+#define VMALLOC_START		PCI_IO_END
 
 #endif /* __ASM_MACH_GENERIC_SPACES_H */
