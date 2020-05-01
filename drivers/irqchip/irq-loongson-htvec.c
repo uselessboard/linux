@@ -45,7 +45,6 @@ static void htvec_irq_dispatch(struct irq_desc *desc)
 
 	for (i = 0; i < VEC_REG_COUNT; i++) {
 		pending = readl(priv->base + 4 * i);
-		writel(pending, priv->base + 4 * i);
 		while (pending) {
 			int bit = __ffs(pending);
 
@@ -68,7 +67,7 @@ static void htvec_ack_irq(struct irq_data *d)
 	void __iomem *addr = priv->base;
 
 	addr += VEC_REG_IDX(d->hwirq) * 4;
-	writel(VEC_REG_BIT(d->hwirq), addr);
+	writel(BIT(VEC_REG_BIT(d->hwirq)), addr);
 }
 
 static void htvec_mask_irq(struct irq_data *d)
