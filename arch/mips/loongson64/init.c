@@ -50,6 +50,10 @@ static __init void reserve_pio_range(void)
 {
 	struct logic_pio_hwaddr *range;
 
+	/* HACK: No need on 2K */
+	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R)
+		return;
+
 	range = kzalloc(sizeof(*range), GFP_ATOMIC);
 	if (!range)
 		return;
