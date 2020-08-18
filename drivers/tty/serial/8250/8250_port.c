@@ -2054,7 +2054,24 @@ static void wait_for_xmitr(struct uart_8250_port *up, int bits)
 
 	/* Wait up to 10ms for the character(s) to be sent. */
 	for (;;) {
+		if(up->port.type == PORT_16850) {
+			status = serial_in(up, 0xEB);
+			status |= 1<<1;
+			serial_out(up, 0xEB, status);
+			printk("status EB: [%x]\n", status);
+		}
+
 		status = serial_in(up, UART_LSR);
+
+		if(up->port.type == PORT_16850) {
+			printk("status: [%x]\n", status);
+			printk("  bits: [%x]\n", bits);
+
+			if( (status & bits) == bits){
+				printk("break;\n");
+//				dump_stack();
+			}
+		}
 
 		up->lsr_saved_flags |= status & LSR_SAVE_FLAGS;
 
