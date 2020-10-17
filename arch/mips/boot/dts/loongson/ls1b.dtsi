@@ -21,13 +21,13 @@
 				#size-cells = <1>;
 				ranges;
 
-				apb {
+				apb apb@0x1fe40000 {
 					compatible = "loongson,apb-bus", "simple-bus";
 					#address-cells = <1>;
 					#size-cells = <1>;
 					ranges;
 
-					serial0: serial@1fe40000 {
+					serial0: serial@0000 {
 						compatible = "ns16550a";
 						reg = <0x1fe40000 0x8>;
 						reg-shift = <0>;
@@ -35,7 +35,7 @@
 						status = "disabled";
 					};
 
-					serial1: serial@1fe44000 {
+					serial1: serial@4000 {
 						compatible = "ns16550a";
 						reg = <0x1fe44000 0x8>;
 						reg-shift = <0>;
@@ -43,7 +43,7 @@
 						status = "disabled";
 					};
 
-					serial2: serial@1fe48000 {
+					serial2: serial@8000 {
 						compatible = "ns16550a";
 						reg = <0x1fe48000 0x8>;
 						reg-shift = <0>;
@@ -51,7 +51,7 @@
 						status = "disabled";
 					};
 
-					serial3: serial@1fe4c000 {
+					serial3: serial@c000 {
 						compatible = "ns16550a";
 						reg = <0x1fe4c000 0x8>;
 						reg-shift = <0>;
