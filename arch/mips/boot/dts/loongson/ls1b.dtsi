@@ -21,7 +21,7 @@
 				#size-cells = <1>;
 				ranges;
 
-				apb apb@0x1fe40000 {
+				apb: apb@0x1fe40000 {
 					compatible = "loongson,apb-bus", "simple-bus";
 					#address-cells = <1>;
 					#size-cells = <1>;
