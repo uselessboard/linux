@@ -1,0 +1,65 @@
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		device_type = "soc";
+		ranges;
+
+		xbar {
+			compatible = "loongson,xbar-bus", "simple-bus";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges;
+
+			axi-mux {
+				compatible = "loongson,axi-mux", "simple-bus";
+				#address-cells = <1>;
+				#size-cells = <1>;
+				ranges;
+
+				apb {
+					compatible = "loongson,apb-bus", "simple-bus";
+					#address-cells = <1>;
+					#size-cells = <1>;
+					ranges;
+
+					serial0: serial@1fe40000 {
+						compatible = "ns16550a";
+						reg = <0x1fe40000 0x8>;
+						reg-shift = <0>;
+						clock-frequency = <83000000>;
+						status = "disabled";
+					};
+
+					serial1: serial@1fe44000 {
+						compatible = "ns16550a";
+						reg = <0x1fe44000 0x8>;
+						reg-shift = <0>;
+						clock-frequency = <83000000>;
+						status = "disabled";
+					};
+
+					serial2: serial@1fe48000 {
+						compatible = "ns16550a";
+						reg = <0x1fe48000 0x8>;
+						reg-shift = <0>;
+						clock-frequency = <83000000>;
+						status = "disabled";
+					};
+
+					serial3: serial@1fe4c000 {
+						compatible = "ns16550a";
+						reg = <0x1fe4c000 0x8>;
+						reg-shift = <0>;
+						clock-frequency = <83000000>;
+						status = "disabled";
+					};
+				};
+			};
+		};
+	};
+};
