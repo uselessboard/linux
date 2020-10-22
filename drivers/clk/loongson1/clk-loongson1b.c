@@ -16,15 +16,24 @@
 
 static DEFINE_SPINLOCK(_lock);
 
-static unsigned long ls1x_pll_recalc_rate(struct clk_hw *hw,
-					  unsigned long parent_rate)
+static unsigned long ls1x_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
 {
-	u32 pll, rate;
+	unsigned long pll_freq, rate;
+	int n;
 
-	pll = __raw_readl(LS1X_CLK_PLL_FREQ);
-	rate = 12 + (pll & GENMASK(5, 0));
-	rate *= OSC;
-	rate >>= 1;
+	pll_freq = __raw_readl(LS1X_CLK_PLL_FREQ);
+
+	/* (12+PLL_FREQ[5:0]+ (PLL_FREQ[17:8]/1024))*33/2Mhz */
+	n  = 12 * 1024;
+	n += (pll_freq & 0x3F) * 1024;
+	n += (pll_freq >> 8) & 0x3FF;
+
+	/* FIXME: parent_rate */
+	parent_rate = OSC;
+
+	rate = parent_rate / 2 / 1024;
+	/* avoid overflow. */
+	rate *= n;
 
 	return rate;
 }
@@ -105,8 +114,7 @@ void __init ls1x_clk_init(void)
 
 	/* clock derived from AHB clk */
 	/* APB clk is always half of the AHB clk */
-	hw = clk_hw_register_fixed_factor(NULL, "apb_clk", "ahb_clk", 0, 1,
-					DIV_APB);
+	hw = clk_hw_register_fixed_factor(NULL, "apb_clk", "ahb_clk", 0, 1, DIV_APB);
 	clk_hw_register_clkdev(hw, "apb_clk", NULL);
 	clk_hw_register_clkdev(hw, "ls1x-ac97", NULL);
 	clk_hw_register_clkdev(hw, "ls1x-i2c", NULL);
